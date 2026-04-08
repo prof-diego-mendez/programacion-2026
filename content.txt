@@ -1,0 +1,280 @@
+Lenguajes de
+Programación
+Introducción
+Para resolver un problema con una computadora, el primer paso es comunicarle el algoritmo que resuelve el
+problema; por lo tanto para ser ejecutado deberá estar escrito en un lenguaje que la máquina conozca.
+El conjunto de instrucciones que una máquina es capaz de ejecutar se denomina lenguaje de máquina y
+básicamente está formado por  un conjunto de operaciones aritméticas, lógicas y de transferencia de datos, el
+cual es muy difícil de utilizar ya que está muy alejado de la forma en que una persona razona los algoritmos.
+Existen herramientas utilizadas para traducir algoritmos al lengu aje de máquina, sinembargo ninguno es
+capaz de traducir el lenguaje informal que se viene utilizando; esto sucede debido a que el lenguaje informal
+es ambiguo y tiene ciertas carencias.
+Si se le agregan reglas y nuevos elementos al lenguaje informal se ob tiene un lenguaje formal el cual se
+denominará lenguaje de alto nivel ode programación. Por ser formal ,este tipo de lenguaje sí es posible
+traducirlo a lenguaje de máquina. Al proceso de traducción se le denomina compilación.
+Por lo tanto, escribiremos nuestros programas en un lenguaje de alto nivel. Luego le aplicaremos un
+compilado r, el cual buscar á errores de sintaxis y de sem ántica en nuestro programa de alto nivel. En caso de
+encontrar alguno, nos informar á del error. Debemos corregir  dicho error y luego compilarlo nuevamente.
+Cuand o no quede  ning ún error de sintaxis ni de sem ántica, el compilador realizar á latraducción  a lenguaje de
+máquina. El programa compilado, ya en lenguaje de m áquina, es el que llamaremos programa ejecutable y
+que el computador ser á finalmente capaz de ejecutar.
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+Lenguajes de Programación
+Un Lenguaje de Alto Nivel
+En lo sucesivo, para evitar la ambigü edad y carencias explicadas previamente, se abandonará el lenguaje
+informal y se adoptará unlenguaje de programación. El lenguaje elegido para escribir y probar los algoritmos
+del curso es el lenguaje C.  Existen muchos otros lenguajes de programaci ón.Se opt ó por C por ser uno de
+los lenguajes m ásde programaci ón más conocidos  y utilizados .
+Instrucción
+Las instrucciones s imples en C están finalizadas con un “;” para indicar el fin de la misma. Existen distintas
+clases de instrucciones simples. Por ejemplo, la instrucci ón de asignaci ón, la instrucci ón que permite leer un
+valor por teclado y cargarlo en una variable, o la instrucci ón que permite mostrar un valor o texto al usuario.
+Bloque s y Estructuras de Control
+En C, a una secuencia de instrucciones encerrada entre llaves { }se le denomina bloque oinstrucción
+compuesta.  Una instrucci ón compuesta puede contener tanto instrucciones simples como otras instrucciones
+compuestas. A continuación se presenta n lasestructuras de control vistas anteriormente  ycómo seescriben
+en el lenguaje C .Las secuenc ias de pasos vistas previamente se corresponden con instrucciones de C . En
+caso de contener m ás de una instrucci ón, en el lenguaje C corresponde a una instrucci ón compuesta. O sea,
+deben escribirse dichas instrucciones encerradas entre llaves.
+sicondicion entonces
+secuencia 1
+sino
+secuencia 2
+repetir
+       Secuencia
+mientras condicion sea verdadera
+mientras condicion sea verdadera hacer
+secuencia
+para cada elemento de  un conjunto hacer
+secuencia
+según expresi ón sea
+       valor 1 :secuencia 1
+….
+otro :secuencia N+1ifcondicion
+         instruccion 1
+else
+instruccion 2
+do
+       instruccion
+while condicion sea verdadera
+while condicion sea verdadera
+       instruccion
+for(exp 1;exp 2;exp 3)
+instrucción
+switch (exp)
+{
+casevalor 1 : instruccion 1
+….
+default :instrucción N+1
+}
+Identificadores
+Los identificadores válidos en C deben cumplir las siguientes restricciones :
+•
+•
+•
+•
+•Secuencia de letras, dígitos o infra_guión
+Deben comenzar con una letra
+Solo los primeros 31 caracteres son significativos
+No pueden coincidir con palabras reservadas  (if, switch, etc)
+Se distinguen mayúsculas de minúsculas
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+Lenguajes de Programación
+3
+Variables y Constantes
+Las variables y constantes son los objetos básicos de un programa; pueden representar valores de diversos
+tipos, desde un simple número natural hasta el  conjunto de empleados de una empresa.
+Todos los datos que se quieran procesar deben estar almacenados de alguna forma en la memoria de la
+computadora. En los lenguajes de alto nivel no se manipula directamente la memoria, sino que se hace a
+travé s de variables y constantes. Durante la ejecución del programa, estos objetos quedan almacenados en
+una cierta dirección de memoria ocupando un espacio que dependerá del tipo de dato de cada uno.
+En C, uno de los tipos que definen valores enteros se llama int.Otro es el tipo float, quepermite representar
+valores reales o de punto flotante. Los valores 12.0 y 12 se consideran de distintos tipos. El tipo de los
+caracteres en C se llama char. Los no mbres de estos tipos, junto con los de otros tipos predefinidos de C son
+palabras reservadas , así como los nombres de las estructuras de control (if, switch, for, etc.)
+/* Variable cde tipo carácter */
+a
+19B8 19B9 19BA 19BB 19BC 19BD 19BEContenido de
+la variable c
+/* Variable nde tipo entero */
+Contenido de
+la variable n -560
+19C8 19C9 19CA 19CB 19CC 19CD 19CE
+/* Variable fde tipo real */
+1714,326
+19D8 19D9 19DA 19DB 19DC 19DD 19DEContenido de
+la variable f
+Definición:
+Una variable es una cuádrupla (N,V,T,D), donde:
+•
+•
+•
+•N es el identificador  que define el nombre de la variable
+V es el valor  que contiene (el cual puede variar)
+T es el tipo de datos correspondiente a la variable
+D es la dirección que ocupa enlamemoria  de la m áquina
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+Lenguajes de Programación
+Declaración de Variables
+Es necesario avisar al compilador que se utilizará una variable dentro de un programa, de forma de que se
+reserve la memoria necesaria para almacenar su contenido. El omitir un aviso tal, causará un error. La forma
+en que se avisa el posterior uso de una variable, es declarándola previamente. Para declarar una variable, se
+debe especificar solamente el tipo y el nombre .La direcci ón de memoria la otorga luego el compilador y es de
+bajo nivel. En nuestro programa en alto nivel, no interesa ni aporta conocer la direcci ón de memoria.
+id_tipo lista_id s_variables;
+•intcantidad;
+•float resultado, x;
+Ejemplo:•char letra_1, letra _2, letra_3 ;
+En el caso de que se quiera declarar más de una variable del mismo tipo, es posible declararlas todas de una
+vez, separando sus nombres con comas. Se acostumbra (y de hecho, es considerado una buena pr áctica de
+programaci ón) declarar todas las variables al comienzo del programa (m ás adelante veremos cómo).
+Constantes Simbólicas
+C permite la definición de constantes simbólicas, al permiti r asociar un nombre simbólico a un valor de un tipo
+dado. El propósito de utilizar constantes simbólicas en lugar de constantes de tipo es que para modificar el
+valor de una constante simbólica, únicamente se modifica en su definición, en lugar de modifica r cada
+ocurrecia en el código del programa.  Por ejemplo, si queremos utilizar el valor del IVA en muchas expresiones
+dentro del programa, en lugar de escribir dicho valor en cada una, lo que hacemos es definirlo como
+constante simb ólica. Luego, en cada expresi ón que haga uso de l iva, en lugar de colocar directamente el
+valor, lo que haremos es hacer uso de la constante simb ólica. La sintaxis para declarar unaconstante
+simbólica es la siguiente:
+La definición de una constante simbólica es igual a la de una variable agregando el calificador const delante,
+y dandole un valor a la vez. Este valor no podrá ser cambiado  durante la ejecuci ón.Seacostumbra, aunque
+no es obligatorio desde el punto de vista de la sintaxis del lenguaje, que los nombres de las constantes
+simb ólicas se escriban siempre en may úsculas.  Tambi én es una buena pr áctica de programaci ón que las
+constantes simb ólicas sean lo primero que se declare dentro del progra ma.const id_tipo id_constante = valor;
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+Lenguajes de Programación
+5
+•const char PRIMVO CAL = ‘a’;
+•const int IVA = 23;
+Ejemplo:
+Estructura de un Programa
+Programa
+Unprograma esunalgoritmo  escrito  en un lenguaje de  programaci ón de  alto nivel.  Los datos
+de entrada seráningresados por el usuario a trav és del teclado . La salida ser á emitida al
+usuario a trav és de mensajes por pantalla y el m étodo del algoritmo estar á dado por las
+instrucciones (simples y/o compuestas) que contenga el programa.
+En futuros cursos de programaci ón se ver á tambi én cómo hacer que un programa contenga
+más de un algoritmo en lugar de solamente uno. Dichos algoritmos se llamar án funciones y
+procedimientos y ser án estudiados oportunamente. Tambi én se ver án otros mecanismos para
+leer datos de la entrada y para emitir al usuario la salida. Para este curso, nos bastar á con leer
+desde teclaro y mostrar valores y texto enla salida est ándar (consola).
+Estructura  básica  de un Programa en C
+Se presenta a continuaci ónla estructura que tendr án nuestros primeros programa s enlenguaje C.Todo
+programa que escribamos debe respetar la siguiente estructura sint áctica:
+#include librerias predefinidas
+declaraci ónde constantes simb ólicas
+int main ()
+{
+declaración de variables
+       instrucciones (tanto simples como compuestas)
+}
+Conforme vayamos avanzando  en el curso , iremos incorporando nuevos elementos sint ácticos a la estructura
+básica de un programa .Por ahora, nos bastar á con la estructura reci én definida.
+Lo primero que debe haber en el programa es la inclusi ón de librer ías predefinidas. Veremos que existen
+muchas librer ías predefinidas, que permiten hacer uso de diferentes elementos ya predefinidos del lenguaje.
+La primera librer ía que usaremos se llama <stdio.h> y es la que nos permitir á hacer uso de las instrucciones
+necesarias para poder leer valores por teclado y emitir al usuario tanto texto com o valores por pantalla.
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+áctLenguajes de Programación
+A continuaci ón de la inclusi ón de la(s) librer ía(s) predefinidas que sean necesarias, debe ir la declaraci ón de
+las constantes simb ólicas que se vayan a utilizar en el programa. Cada una de ellas se debe declarar
+conforme a la sintaxis vista anteriormente para las constantes simb ólicas.
+Luego de las constantes simb ólicas, viene otra secci ón que denominaremos programa principal (tambi én
+llamado bloque  principal ) de nuestro programa.  Dentro de dicha secci ón se coloca la declaraci ón de las
+variables, as í como las instrucciones (tanto simples como compuestas) que el programa vaya a utilizar.
+El programa o bloque principal tiene el siguiente encabezado: int main ( ) y debe escribirse exactamente
+así.En futuros cursos de programaci ón se ver á por qué es que se escribe de esa manera. Por ahora, nos
+alcanza con saber que dicha l ínea, as í escrita, marca el comienzo del bloque principal del programa .
+Luego de la línea conteniendo el encabezado del bloque principal ( main ),se colocan llaves .Dentro de
+dichas llaves es que deben ir todas las declaraciones de las variables que el programa utilice, as í como
+todas las instrucciones (tanto simples como compuestas) que el programa vaya a utilizar.
+Observación : Si bien la sintaxis de C permite alternar la declaraci ón de las variables junto con las
+instrucciones dentro del bloque main, se considera una buena pr áctica de programaci ón que primero se
+declaren juntas todas las variables que el pro grama vaya a utilizar y que reci én luego de ellas es que se
+coloquen las instrucciones a ejecutar.  El compilador  admitir á alternar ambos elementos sin problema. Es
+decir, desde el punto de vista sint áctico, ello es posible. No obstante, conforme a las buenas pr ácticas de
+programaci ón, nosotros siempre declararemos primero las variables a utilizar y colocaremos luego las
+instrucciones a ejecu tar.
+A medida que avancemos en el curso, veremos que no solamente es importante que nuestros programas
+sean sint ácticamente correctos y que compilen  correctamente .Tambi én importa que se sigan buenas
+prácticas de programaci ón a la hora de escribir nuestros programas. Esto ayuda a que los programas sean
+más claros, m ás legibles, m ás ordenados y m ásprolijos.
+Entrada y Salida Estándar
+Como se dijo anteriormente, los datos de entrada del programa serán ing resados por el usuario a trav és de
+teclado y los datos de salida del programa (tanto texto como valores) serán mostrados a trav és de la consola .
+Se suele llamar Entrada Est ándar a los datos que se leen por teclado y Salida Est ándar a los valores y
+mensajes mostrados a trav és de la consola.
+Entrada/Salida en C
+En el lenguaje  C, la forma de leer o escribir en los dispositivos de entrada o salida estándar está dada por un
+par de operaciones: scanf yprintf. Estas operaciones se proveen en una librer ía predefinida denominada
+<stdio.h> , por tal razón, para el uso de las mismas es necesario incluir al comienzo del  programa  una línea
+especial que tiene dicho  cometido: #include <stdio.h>
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+Lenguajes de Programación
+7
+scanf
+Esta operación permite el ingres o de datos desde laentrada estándar hacia el programa. Su sintaxis es la
+siguiente:
+scanf (cadena, param 1, param 2, .... , param n);
+El primer parámetro (en este caso cadena) es una cadena de caracteres entre comillas dobles (“ ) que indica
+eltipode los valores que serán leídos y colocados en las variables que siguen a continuación (parámetros)
+que son identificadores de variables previamente definidas.
+Una instrucción que invoca al procedimiento scanf tiene por efecto detener  la ejecución del programa hasta
+que se ingresen tantos valores como parámetros se hayan especificado, los que se almacenarán en la
+entrada estándar en el orden que llegaron. Estos valores se tomarán de allí, de a uno por vez, empezando
+por el primero, y s easignarán a la variables de acuerdo al orden en que estas aparecen en la lista.
+Algunas invocaciones a scanf
+•scanf (“%d”, &cantidad);
+Ejemplo:•scanf ("%c", & letra);
+•scanf (“%f %f”, &precio_nafta, &cant_litros);
+En el primer caso la cadena “%d”  indica que será leído un solo valor, de tipo entero , que ser á almacenado en
+la variable cantidad (de tipo int) .En el segundo  caso la cadena “% c” indica que será leído un solo valor, de
+tipocarácter , que ser á almacenado en la variable letra (de tipo char).En el tercer caso serán leídos dos
+valores de tipo real , los cuales ser án almacenados, respectivamente, en las variables precio_nafta y
+cant_litros (ambas de tipo float) .El símbolo & colocado delante de los identificadores de las variables, es
+necesario por razones que se verán en futuros cursos de pro gramaci ón. Por ahora, nos basta con saber que
+es parte de la sintaxis necesaria para que la instrucci ón scanf funcione correctamente.
+printf
+Con la operació nprintf se escriben datos en lasalida  estándar . El origen de éstos valores puede ser diverso:
+variables, constantes simbólicas, constantes de tipo o expresiones. Su sintaxis es la siguiente:
+printf (cadena, param 1, param 2, .... , param n);
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa
+
+Lenguajes de Programación
+El primer parámetro (en este caso cadena) es una cadena  de caracteres como en scanf que indica el tipode
+los parámetros que se quieren escribir y que corresponden a los identificadores de variables constantes o
+expresiones que siguen en la lista.
+A diferencia de scanf, en printf tambi énes posible escribir un texto que se desee que salga en pantalla,
+intercalándolo con los símbolos para indicar el tipo de los valores a mostrar .El efecto de una instrucción que
+invoca a printf es escribir en la salida estándar los valores de los parámetros, en el orden en  que se
+especificaron.
+•printf(“% f”, precio);
+•printf ("%c", letra);
+•printf(“Hay % d litros”, cant_litros);
+Ejemplo:
+•printf(“Esto es solamente un mensaje \n”);
+En el primer ejemplo, se indica que se va a mostrar un valor de tipo real, y a continuaci ón se coloca la
+variable precio (de tipo float). El efecto en la ejecuci ón es que se muestra por pantalla el valor almacenado
+dentro de la variable precio.
+En el segundo  ejemplo, se indica que se va a mostrar un valor de tipo carácter , y a continuaci ón se coloca la
+variable letra (de tipo char). El efecto en la ejecuci ón es que se muestra por pantalla el valor almacenado
+dentro de la variable letra.
+En el tercer  ejemplo, seinercala texto con un valor de tipo entero , y a continuaci ón se coloca la variable
+cant_litros  (de tipo float). El efecto en la ejecuci ón es que se muestra por pantalla un mensaje formado por la
+palabra Hay, seguido del valor almacenado en la variable cant_litros y seguido luego de la palabra litros . Por
+ejemplo, si la variable cant_litros contiene el valor 10 , el mensaje que ver á el usuario es “Hay 10  litros ”.
+En el  cuarto ejemplo, solamente se muestra texto al usuario, sin incorporar el valor de ninguna variable.  Para
+ello, simplemente se coloca el texto a mos trar entre comillas dobles, como único par ámetro de printf.  Esto
+genera que se muestre al usuario el texto contenido entre las comillas. El car ácter especial \n al final significa
+salto de l ínea. Esto quiere decir que, tras mostrar el mensaje, el program a dar á un salto de l ínea en la
+pantalla. Por lo tanto, cualquier otro mensaje que se muestre posteriormente, aparecer á en la l ínea siguiente.
+En caso de que no se coloque el car ácter de salto de l ínea, lo pr óximo que se despliegue aparecer á en la
+misma l ínea, justo a continuaci ón de la palabra mensaje.
+Este material es de uso exclusivo para los cursos impartidos por Universidad de la Empresa

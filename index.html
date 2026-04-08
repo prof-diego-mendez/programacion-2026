@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 3: Lenguajes de Programación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --code-bg: #0d1117;
+            --border: #475569;
+            --gradient-1: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --gradient-2: linear-gradient(135deg, #06b6d4, #22d3ee);
+            --gradient-3: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 4px;
+            background: var(--gradient-1);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation Sidebar */
+        .nav-sidebar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem 0.75rem;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0 12px 12px 0;
+            border: 1px solid var(--border);
+            border-left: none;
+        }
+
+        .nav-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-dot:hover, .nav-dot.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.3);
+        }
+
+        .nav-dot::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 20px; top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .nav-dot:hover::after { opacity: 1; }
+
+
+
+        /* Progress Tracker */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            animation: pulse-bg 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content { position: relative; z-index: 1; }
+
+        .chapter-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--gradient-1);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #06b6d4, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            animation: slideIn 1s ease-out 0.2s both;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem; left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        .scroll-indicator svg { width: 40px; height: 40px; fill: var(--primary-light); }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        .floating-symbols {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-symbol {
+            position: absolute;
+            font-family: 'Fira Code', monospace;
+            color: rgba(99, 102, 241, 0.1);
+            font-size: 2rem;
+            animation: floatSymbol 20s linear infinite;
+        }
+
+        @keyframes floatSymbol {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            padding: 4rem 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-number {
+            display: inline-block;
+            width: 50px; height: 50px;
+            line-height: 50px; text-align: center;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin: 2.5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section h3::before {
+            content: '';
+            width: 4px; height: 24px;
+            background: var(--gradient-2);
+            border-radius: 2px;
+        }
+
+        .section h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        .section p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        /* Text paragraph from source material */
+        .full-text {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.1);
+        }
+
+        .card p { margin-bottom: 1rem; color: var(--text-muted); }
+        .card p:last-child { margin-bottom: 0; }
+        .card strong { color: var(--text); }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(6, 182, 212, 0.1));
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .info-box::before {
+            content: '💡';
+            position: absolute;
+            top: -12px; left: 1rem;
+            background: var(--bg);
+            padding: 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .info-box p { color: var(--text); }
+
+        /* Warning Box */
+        .warning-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: -12px; left: 1rem;
+            background: var(--bg);
+            padding: 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .code-dot.red { background: #ff5f56; }
+        .code-dot.yellow { background: #ffbd2e; }
+        .code-dot.green { background: #27ca40; }
+
+        .code-header span {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .code-content {
+            padding: 1.5rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+        }
+
+        .code-content .comment { color: #6a737d; font-style: italic; }
+        .code-content .keyword { color: #ff7b72; font-weight: 500; }
+        .code-content .type { color: #79c0ff; }
+        .code-content .string { color: #a5d6ff; }
+        .code-content .function { color: #d2a8ff; }
+        .code-content .number { color: #79c0ff; }
+        .code-content .variable { color: #ffa657; }
+
+        /* Inline Code */
+        code {
+            background: var(--code-bg);
+            color: var(--primary-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0 0.75rem 2rem;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        /* Concept Cards */
+        .concept-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .concept-card .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .concept-card h4 { color: var(--primary-light); margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .concept-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-card);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-light);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: rgba(99, 102, 241, 0.05); }
+
+        /* Tabs */
+        .tabs { margin: 2rem 0; }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn:hover { color: var(--text); background: var(--bg-light); }
+        .tab-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+        .tab-content {
+            display: none;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 0 12px 12px 12px;
+            padding: 1.5rem;
+        }
+
+        .tab-content.active { display: block; }
+
+        /* Quiz */
+        .quiz-container {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover { border-color: var(--primary); background: rgba(99, 102, 241, 0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.2); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(239, 68, 68, 0.2); }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--success); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--error); color: var(--error); }
+
+        /* Memory Diagram */
+        .memory-diagram {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .memory-block {
+            flex: 1;
+            min-width: 200px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .memory-block .address {
+            position: absolute;
+            top: -10px; right: 1rem;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .memory-block .var-name { font-weight: 600; color: var(--primary-light); margin-bottom: 0.5rem; }
+        .memory-block .var-value { font-family: 'Fira Code', monospace; font-size: 1.5rem; color: var(--secondary); }
+
+        /* Flowchart */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .flow-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            text-align: center;
+            min-width: 200px;
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .flow-box:hover { border-color: var(--primary); transform: scale(1.05); }
+        .flow-box.start, .flow-box.end { border-radius: 50px; background: var(--gradient-1); }
+        .flow-arrow { color: var(--primary); font-size: 1.5rem; }
+
+        /* Accordion */
+        .accordion { margin: 1.5rem 0; }
+
+        .accordion-item {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover { background: var(--bg-light); }
+        .accordion-header h4 { margin: 0; color: var(--text); }
+        .accordion-icon { transition: transform 0.3s ease; }
+        .accordion-item.active .accordion-icon { transform: rotate(180deg); }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-body { max-height: 2000px; }
+        .accordion-content { padding: 1.5rem; }
+
+        /* Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .comparison-card h4 {
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; }
+
+        /* Code Editor */
+        .code-editor {
+            background: var(--code-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .editor-header {
+            background: var(--bg-card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-header .dots { display: flex; gap: 0.5rem; }
+
+        .run-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .run-btn:hover { background: #059669; transform: scale(1.05); }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 200px;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            padding: 1rem;
+            resize: vertical;
+            outline: none;
+            line-height: 1.8;
+        }
+
+        .output-box {
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            min-height: 60px;
+        }
+
+        .output-box .label { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.5rem; }
+        .output-content { color: var(--success); }
+
+        /* Highlight */
+        .highlight { color: var(--accent); font-weight: 600; }
+        .text-primary { color: var(--primary-light); }
+        .text-secondary { color: var(--secondary); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        .footer p { color: var(--text-muted); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-sidebar { display: none; }
+            .comparison { grid-template-columns: 1fr; }
+        }
+
+        /* Animation helpers */
+        .fade-in { animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Side-by-side pseudocode comparison */
+        .pseudocode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .pseudocode-grid { grid-template-columns: 1fr; }
+        }
+
+        .pseudocode-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .pseudocode-card .card-label {
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pseudocode-card .card-label.pseudo { color: var(--accent); }
+        .pseudocode-card .card-label.ccode { color: var(--success); }
+
+        .pseudocode-card .card-body {
+            padding: 1.25rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 2;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Full-width text block with styling */
+        .content-block {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .content-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--gradient-1);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-primary { background: rgba(99, 102, 241, 0.2); color: var(--primary-light); }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--accent); }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation Sidebar -->
+    <nav class="nav-sidebar" id="navSidebar">
+        <div class="nav-dot active" data-target="hero" data-tooltip="Inicio"></div>
+        <div class="nav-dot" data-target="intro" data-tooltip="Introducción"></div>
+        <div class="nav-dot" data-target="compilacion" data-tooltip="Compilación"></div>
+        <div class="nav-dot" data-target="lenguaje-c" data-tooltip="Lenguaje C"></div>
+        <div class="nav-dot" data-target="instrucciones" data-tooltip="Instrucciones"></div>
+        <div class="nav-dot" data-target="estructuras" data-tooltip="Estructuras"></div>
+        <div class="nav-dot" data-target="identificadores" data-tooltip="Identificadores"></div>
+        <div class="nav-dot" data-target="variables" data-tooltip="Variables"></div>
+        <div class="nav-dot" data-target="declaracion" data-tooltip="Declaración"></div>
+        <div class="nav-dot" data-target="constantes" data-tooltip="Constantes"></div>
+        <div class="nav-dot" data-target="programa" data-tooltip="Programa"></div>
+        <div class="nav-dot" data-target="estructura-programa" data-tooltip="Estructura"></div>
+        <div class="nav-dot" data-target="buenas-practicas" data-tooltip="Buenas Prácticas"></div>
+        <div class="nav-dot" data-target="entrada-salida" data-tooltip="Entrada/Salida"></div>
+        <div class="nav-dot" data-target="scanf-detail" data-tooltip="scanf"></div>
+        <div class="nav-dot" data-target="printf-detail" data-tooltip="printf"></div>
+        <div class="nav-dot" data-target="quiz" data-tooltip="Quiz"></div>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="floating-symbols" id="floatingSymbols"></div>
+        <div class="hero-content">
+            <div class="chapter-badge">📚 Capítulo 3 - El lenguaje C</div>
+            <h1>Lenguajes de Programación</h1>
+            <p class="subtitle">Descubre cómo comunicarnos con las computadoras para resolver problemas</p>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number">C</div>
+                    <div class="stat-label">Lenguaje de estudio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{ }</div>
+                    <div class="stat-label">Bloques de código</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Posibilidades</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator" onclick="document.getElementById('intro').scrollIntoView({behavior: 'smooth'})">
+            <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <!-- ==================== SECTION 1: INTRODUCCIÓN ==================== -->
+        <section class="section" id="intro">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2>Introducción</h2>
+                <p style="color: var(--text-muted);">¿Cómo le decimos a una computadora qué hacer?</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Para resolver un problema con una computadora, el primer paso es <strong class="highlight">comunicarle el algoritmo</strong> que resuelve el problema; por lo tanto para ser ejecutado deberá estar escrito en un lenguaje que la máquina conozca.</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">El conjunto de instrucciones que una máquina es capaz de ejecutar se denomina <strong class="text-primary">lenguaje de máquina</strong> y básicamente está formado por un conjunto de <strong>operaciones aritméticas, lógicas y de transferencia de datos</strong>, el cual es muy difícil de utilizar ya que está muy alejado de la forma en que una persona razona los algoritmos.</p>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-card">
+                    <h4>🗣️ Lenguaje Informal</h4>
+                    <p class="full-text">Es la forma natural en que hablamos y escribimos. Es <strong class="highlight">ambiguo</strong> y tiene ciertas carencias que dificultan la comunicación precisa con una máquina.</p>
+                </div>
+                <div class="comparison-card">
+                    <h4>🤖 Lenguaje de Máquina</h4>
+                    <p class="full-text">Conjunto de instrucciones que una máquina puede ejecutar directamente. Formado por operaciones <strong class="text-secondary">aritméticas, lógicas y de transferencia de datos</strong>. Muy difícil de utilizar.</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Existen herramientas utilizadas para <strong>traducir algoritmos al lenguaje de máquina</strong>, sin embargo ninguna es capaz de traducir el lenguaje informal que se viene utilizando; esto sucede debido a que el lenguaje informal es ambiguo y tiene ciertas carencias.</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Si se le agregan reglas y nuevos elementos al lenguaje informal se obtiene un <strong class="text-primary">lenguaje formal</strong> el cual se denominará <strong class="highlight">lenguaje de alto nivel</strong> o <strong class="highlight">de programación</strong>. Por ser formal, este tipo de lenguaje sí es posible traducirlo a lenguaje de máquina.</p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Al proceso de traducción se le denomina <span class="highlight">compilación</span>.</strong></p>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 2: COMPILACIÓN ==================== -->
+        <section class="section" id="compilacion">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2>El Proceso de Compilación</h2>
+                <p style="color: var(--text-muted);">Del algoritmo al programa ejecutable</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Por lo tanto, escribiremos nuestros programas en un <strong class="highlight">lenguaje de alto nivel</strong>. Luego le aplicaremos un <strong>compilador</strong>, el cual buscará <strong class="text-primary">errores de sintaxis y de semántica</strong> en nuestro programa de alto nivel.</p>
+                <p class="full-text">En caso de encontrar alguno, nos informará del error. Debemos corregir dicho error y luego compilarlo nuevamente.</p>
+                <p class="full-text">Cuando no quede ningún error de sintaxis ni de semántica, el compilador realizará la <strong>traducción a lenguaje de máquina</strong>. El programa compilado, ya en lenguaje de máquina, es el que llamaremos <strong class="text-secondary">programa ejecutable</strong> y que el computador será finalmente capaz de ejecutar.</p>
+            </div>
+
+            <h3>Flujo del Proceso</h3>
+            <div class="flowchart">
+                <div class="flow-box start">Algoritmo (idea)</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-box">Escribir en Lenguaje de Alto Nivel<br><small>(código fuente)</small></div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-box decision" style="border-color: var(--accent);">Compilador<br><small>¿Errores de sintaxis/semántica?</small></div>
+                <div class="flow-arrow">↓ Sí</div>
+                <div class="flow-box" style="border-color: var(--error);">❌ Informar errores → Corregir → Volver a compilar</div>
+                <div class="flow-arrow">↑ (bucle)</div>
+                <div class="flow-arrow">↓ No (sin errores)</div>
+                <div class="flow-box" style="border-color: var(--success); background: rgba(16,185,129,0.1);">Traducción a lenguaje de máquina ✓</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-box end">Programa Ejecutable → La computadora ejecuta</div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 3: LENGUAJE C ==================== -->
+        <section class="section" id="lenguaje-c">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2>Un Lenguaje de Alto Nivel: C</h2>
+                <p style="color: var(--text-muted);">El lenguaje elegido para escribir y probar algoritmos</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">En lo sucesivo, para evitar la ambigüedad y carencias explicadas previamente, se abandonará el lenguaje informal y se adoptará un <strong class="highlight">lenguaje de programación</strong>.</p>
+                <p class="full-text">El lenguaje elegido para escribir y probar los algoritmos del curso es el <strong class="text-primary">lenguaje C</strong>. Existen muchos otros lenguajes de programación. Se optó por C por ser uno de los lenguajes de programación <strong>más conocidos y utilizados</strong>.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="concept-card">
+                    <div class="icon">🏆</div>
+                    <h4>Más Conocido</h4>
+                    <p>Uno de los lenguajes de programación más ampliamente reconocidos en la industria</p>
+                </div>
+                <div class="concept-card">
+                    <div class="icon">🌍</div>
+                    <h4>Más Utilizado</h4>
+                    <p>Ampliamente adoptado en proyectos de software a nivel mundial</p>
+                </div>
+                <div class="concept-card">
+                    <div class="icon">🎓</div>
+                    <h4>Educativo</h4>
+                    <p>Ideal para aprender los fundamentos de programación</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 4: INSTRUCCIONES ==================== -->
+        <section class="section" id="instrucciones">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2>Instrucción</h2>
+                <p style="color: var(--text-muted);">Los bloques básicos de construcción de programas</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Las <strong class="highlight">instrucciones simples</strong> en C están finalizadas con un <code>;</code> para indicar el fin de la misma. Existen distintas clases de instrucciones simples.</p>
+            </div>
+
+            <h3>Tipos de Instrucciones Simples</h3>
+            <div class="grid-3">
+                <div class="concept-card">
+                    <div class="icon">📝</div>
+                    <h4>Asignación</h4>
+                    <p>La instrucción de asignación, que permite dar un valor a una variable</p>
+                </div>
+                <div class="concept-card">
+                    <div class="icon">⌨️</div>
+                    <h4>Lectura</h4>
+                    <p>La instrucción que permite leer un valor por teclado y cargarlo en una variable</p>
+                </div>
+                <div class="concept-card">
+                    <div class="icon">🖥️</div>
+                    <h4>Escritura</h4>
+                    <p>La instrucción que permite mostrar un valor o texto al usuario</p>
+                </div>
+            </div>
+
+            <h3>Bloques e Instrucción Compuesta</h3>
+            <div class="content-block">
+                <p class="full-text">En C, a una secuencia de instrucciones encerrada entre llaves <code>{ }</code> se le denomina <strong class="highlight">bloque</strong> o <strong class="highlight">instrucción compuesta</strong>.</p>
+                <p class="full-text">Una instrucción compuesta puede contener tanto instrucciones simples como otras instrucciones compuestas.</p>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 5: ESTRUCTURAS DE CONTROL ==================== -->
+        <section class="section" id="estructuras">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2>Bloques y Estructuras de Control</h2>
+                <p style="color: var(--text-muted);">Cómo controlar el flujo de ejecución de un programa</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">A continuación se presentan las estructuras de control vistas anteriormente y <strong>cómo se escriben en el lenguaje C</strong>. Las secuencias de pasos vistas previamente se corresponden con instrucciones de C. En caso de contener más de una instrucción, en el lenguaje C corresponde a una instrucción compuesta. O sea, deben escribirse dichas instrucciones <strong class="highlight">encerradas entre llaves</strong>.</p>
+            </div>
+
+            <!-- Pseudocode vs C comparison for each structure -->
+            <h3>Condicional: si-entonces-sino</h3>
+            <div class="pseudocode-grid">
+                <div class="pseudocode-card">
+                    <div class="card-label pseudo">📝 Pseudocódigo</div>
+                    <div class="card-body"><span class="keyword">si</span> <span class="variable">condicion</span> <span class="keyword">entonces</span>
+    <span class="variable">secuencia_1</span>
+<span class="keyword">sino</span>
+    <span class="variable">secuencia_2</span></div>
+                </div>
+                <div class="pseudocode-card">
+                    <div class="card-label ccode">💻 Lenguaje C</div>
+                    <div class="card-body"><span class="keyword">if</span> (<span class="variable">condicion</span>) {
+    <span class="variable">instruccion_1</span>;
+} <span class="keyword">else</span> {
+    <span class="variable">instruccion_2</span>;
+}</div>
+                </div>
+            </div>
+
+            <h3>Bucle: repetir-mientras</h3>
+            <div class="pseudocode-grid">
+                <div class="pseudocode-card">
+                    <div class="card-label pseudo">📝 Pseudocódigo</div>
+                    <div class="card-body"><span class="keyword">repetir</span>
+    <span class="variable">secuencia</span>
+<span class="keyword">mientras</span> <span class="variable">condicion</span> <span class="keyword">sea verdadera</span></div>
+                </div>
+                <div class="pseudocode-card">
+                    <div class="card-label ccode">💻 Lenguaje C</div>
+                    <div class="card-body"><span class="keyword">do</span> {
+    <span class="variable">instruccion</span>;
+} <span class="keyword">while</span> (<span class="variable">condicion</span>);</div>
+                </div>
+            </div>
+
+            <h3>Bucle: mientras-hacer</h3>
+            <div class="pseudocode-grid">
+                <div class="pseudocode-card">
+                    <div class="card-label pseudo">📝 Pseudocódigo</div>
+                    <div class="card-body"><span class="keyword">mientras</span> <span class="variable">condicion</span> <span class="keyword">sea verdadera hacer</span>
+    <span class="variable">secuencia</span></div>
+                </div>
+                <div class="pseudocode-card">
+                    <div class="card-label ccode">💻 Lenguaje C</div>
+                    <div class="card-body"><span class="keyword">while</span> (<span class="variable">condicion</span>) {
+    <span class="variable">instruccion</span>;
+}</div>
+                </div>
+            </div>
+
+            <h3>Bucle: para-cada</h3>
+            <div class="pseudocode-grid">
+                <div class="pseudocode-card">
+                    <div class="card-label pseudo">📝 Pseudocódigo</div>
+                    <div class="card-body"><span class="keyword">para cada</span> <span class="variable">elemento</span> <span class="keyword">de un conjunto hacer</span>
+    <span class="variable">secuencia</span></div>
+                </div>
+                <div class="pseudocode-card">
+                    <div class="card-label ccode">💻 Lenguaje C</div>
+                    <div class="card-body"><span class="keyword">for</span> (<span class="variable">exp1</span>; <span class="variable">exp2</span>; <span class="variable">exp3</span>) {
+    <span class="variable">instruccion</span>;
+}</div>
+                </div>
+            </div>
+
+            <h3>Selección múltiple: según-sea</h3>
+            <div class="pseudocode-grid">
+                <div class="pseudocode-card">
+                    <div class="card-label pseudo">📝 Pseudocódigo</div>
+                    <div class="card-body"><span class="keyword">según</span> <span class="variable">expresion</span> <span class="keyword">sea</span>
+    <span class="variable">valor_1</span>: <span class="variable">secuencia_1</span>
+    ….
+    <span class="keyword">otro</span>: <span class="variable">secuencia_N+1</span></div>
+                </div>
+                <div class="pseudocode-card">
+                    <div class="card-label ccode">💻 Lenguaje C</div>
+                    <div class="card-body"><span class="keyword">switch</span> (<span class="variable">exp</span>) {
+    <span class="keyword">case</span> <span class="variable">valor1</span>:
+        <span class="variable">instruccion_1</span>;
+        <span class="keyword">break</span>;
+    ….
+    <span class="keyword">default</span>:
+        <span class="variable">instruccion_N</span>;
+}</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 6: IDENTIFICADORES ==================== -->
+        <section class="section" id="identificadores">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <h2>Identificadores</h2>
+                <p style="color: var(--text-muted);">Las reglas para nombrar elementos en C</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Los identificadores válidos en C deben cumplir las siguientes <strong class="highlight">restricciones</strong>:</p>
+            </div>
+
+            <ul class="feature-list">
+                <li><strong>Secuencia de letras, dígitos o guión bajo</strong> (<code>_</code>)</li>
+                <li>Deben <strong>comenzar con una letra</strong></li>
+                <li>Solo los primeros <strong>31 caracteres</strong> son significativos</li>
+                <li>No pueden coincidir con <strong>palabras reservadas</strong> (<code>if</code>, <code>switch</code>, etc.)</li>
+                <li>Se distinguen <strong>mayúsculas de minúsculas</strong> (case-sensitive)</li>
+            </ul>
+
+            <div class="grid-2">
+                <div class="concept-card" style="border-color: var(--success);">
+                    <h4 style="color: var(--success);">✓ Válidos</h4>
+                    <div class="code-block" style="margin-top: 1rem;">
+                        <div class="code-header" style="border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span>identificadores_validos.c</span>
+                        </div>
+                        <div class="code-content"><span class="comment">// ✅ Estos identificadores son válidos en C</span>
+
+<span class="variable">cantidad</span>              <span class="comment">// nombre descriptivo</span>
+<span class="variable">resultado_final</span>       <span class="comment">// usa guión bajo</span>
+<span class="variable">letra_1</span>               <span class="comment">// combina letras, _ y dígitos</span>
+<span class="variable">miVariable</span>            <span class="comment">// camelCase</span>
+<span class="variable">MiVariable</span>            <span class="comment">// ¡diferente de miVariable! (case-sensitive)</span></div>
+                    </div>
+                </div>
+                <div class="concept-card" style="border-color: var(--error);">
+                    <h4 style="color: var(--error);">✗ Inválidos</h4>
+                    <div class="code-block" style="margin-top: 1rem;">
+                        <div class="code-header" style="border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span>identificadores_invalidos.c</span>
+                        </div>
+                        <div class="code-content"><span class="comment">// ❌ Estos identificadores NO son válidos en C</span>
+
+<span class="variable">1variable</span>             <span class="comment">// ❌ empieza con número</span>
+<span class="keyword">if</span>                    <span class="comment">// ❌ palabra reservada</span>
+<span class="variable">mi-var</span>                <span class="comment">// ❌ contiene guión medio (-)</span>
+<span class="variable">mi var</span>                <span class="comment">// ❌ contiene espacio</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 7: VARIABLES ==================== -->
+        <section class="section" id="variables">
+            <div class="section-header">
+                <div class="section-number">7</div>
+                <h2>Variables y Constantes</h2>
+                <p style="color: var(--text-muted);">Los objetos básicos de un programa</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Las variables y constantes son los <strong class="highlight">objetos básicos</strong> de un programa; pueden representar valores de diversos tipos, desde un simple número natural hasta el conjunto de empleados de una empresa.</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Todos los datos que se quieran procesar deben estar <strong>almacenados de alguna forma en la memoria</strong> de la computadora. En los lenguajes de alto nivel no se manipula directamente la memoria, sino que se hace a través de variables y constantes.</p>
+                <p class="full-text">Durante la ejecución del programa, estos objetos quedan almacenados en una <strong>cierta dirección de memoria</strong> ocupando un espacio que dependerá del tipo de dato de cada uno.</p>
+            </div>
+
+            <h3>Tipos de Datos Básicos en C</h3>
+            <div class="content-block">
+                <p class="full-text">En C, uno de los tipos que definen valores enteros se llama <code>int</code>. Otro es el tipo <code>float</code>, que permite representar <strong>valores reales o de punto flotante</strong>. Los valores <strong>12.0</strong> y <strong>12</strong> se consideran de distintos tipos.</p>
+                <p class="full-text">El tipo de los caracteres en C se llama <code>char</code>. Los nombres de estos tipos, junto con los de otros tipos predefinidos de C son <strong class="highlight">palabras reservadas</strong>, así como los nombres de las estructuras de control (<code>if</code>, <code>switch</code>, <code>for</code>, etc.)</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="concept-card">
+                    <div class="icon">🔢</div>
+                    <h4>int</h4>
+                    <p>Valores enteros</p>
+                    <div class="code-block" style="margin-top: 0.5rem;">
+                        <div class="code-header" style="border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span>tipo_int.c</span>
+                        </div>
+                        <div class="code-content"><span class="comment">// Variable de tipo entero (int)</span>
+<span class="keyword">int</span> <span class="variable">n</span> = <span class="number">-560</span>;</div>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="icon">💯</div>
+                    <h4>float</h4>
+                    <p>Valores reales (punto flotante)</p>
+                    <div class="code-block" style="margin-top: 0.5rem;">
+                        <div class="code-header" style="border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span>tipo_float.c</span>
+                        </div>
+                        <div class="code-content"><span class="comment">// Variable de tipo real (float)</span>
+<span class="keyword">float</span> <span class="variable">f</span> = <span class="number">1714.326</span>;</div>
+                    </div>
+                </div>
+                <div class="concept-card">
+                    <div class="icon">🔤</div>
+                    <h4>char</h4>
+                    <p>Caracteres individuales</p>
+                    <div class="code-block" style="margin-top: 0.5rem;">
+                        <div class="code-header" style="border-top-left-radius: 0; border-top-right-radius: 0;">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <span>tipo_char.c</span>
+                        </div>
+                        <div class="code-content"><span class="comment">// Variable de tipo carácter (char)</span>
+<span class="keyword">char</span> <span class="variable">c</span> = <span class="string">'a'</span>;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <h3>Representación en Memoria</h3>
+            <div class="content-block">
+                <p class="full-text"><em>/* Variable c de tipo carácter */</em></p>
+            </div>
+            <div class="memory-diagram">
+                <div class="memory-block">
+                    <span class="address">19B8</span>
+                    <div class="var-name">char c</div>
+                    <div class="var-value">'a'</div>
+                </div>
+                <div class="memory-block">
+                    <span class="address">19B9</span>
+                    <div class="var-name">→ siguiente dirección</div>
+                </div>
+                <div class="memory-block">
+                    <span class="address">19BE</span>
+                    <div class="var-name">Contenido de la variable c</div>
+                </div>
+            </div>
+
+            <div class="memory-diagram">
+                <div class="memory-block">
+                    <span class="address">19C8</span>
+                    <div class="var-name">int n</div>
+                    <div class="var-value">-560</div>
+                </div>
+                <div class="memory-block">
+                    <span class="address">19C9</span>
+                    <div class="var-name">→ siguiente dirección</div>
+                </div>
+                <div class="memory-block">
+                    <span class="address">19CE</span>
+                    <div class="var-name">Contenido de la variable n</div>
+                </div>
+            </div>
+
+            <div class="memory-diagram">
+                <div class="memory-block">
+                    <span class="address">19D8</span>
+                    <div class="var-name">float f</div>
+                    <div class="var-value">1714,326</div>
+                </div>
+                <div class="memory-block">
+                    <span class="address">19D9</span>
+                    <div class="var-name">→ siguiente dirección</div>
+                </div>
+                <div class="memory-block">
+                    <span class="address">19DE</span>
+                    <div class="var-name">Contenido de la variable f</div>
+                </div>
+            </div> -->
+
+            <h3>Definición Formal de Variable</h3>
+            <div class="info-box">
+                <p><strong>Una variable es una cuádrupla (N, V, T, D), donde:</strong></p>
+                <ul class="feature-list">
+                    <li><strong class="text-primary">N</strong> — Es el identificador que define el <strong>nombre</strong> de la variable</li>
+                    <li><strong class="text-primary">V</strong> — Es el <strong>valor</strong> que contiene (el cual puede variar)</li>
+                    <li><strong class="text-primary">T</strong> — Es el <strong>tipo de datos</strong> correspondiente a la variable</li>
+                    <li><strong class="text-primary">D</strong> — Es la <strong>dirección</strong> que ocupa en la memoria de la máquina</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 8: DECLARACIÓN DE VARIABLES ==================== -->
+        <section class="section" id="declaracion">
+            <div class="section-header">
+                <div class="section-number">8</div>
+                <h2>Declaración de Variables</h2>
+                <p style="color: var(--text-muted);">Avisar al compilador para reservar memoria</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Es necesario <strong class="highlight">avisar al compilador</strong> que se utilizará una variable dentro de un programa, de forma de que se reserve la memoria necesaria para almacenar su contenido. El omitir un aviso tal, <strong class="text-error">causará un error</strong>.</p>
+                <p class="full-text">La forma en que se avisa el posterior uso de una variable, es <strong>declarándola previamente</strong>. Para declarar una variable, se debe especificar solamente el <strong class="text-primary">tipo</strong> y el <strong class="text-primary">nombre</strong>.</p>
+                <p class="full-text">La dirección de memoria la otorga luego el compilador y es de bajo nivel. En nuestro programa en alto nivel, <strong>no interesa ni aporta conocer la dirección de memoria</strong>.</p>
+            </div>
+
+            <h3>Sintaxis de Declaración</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>sintaxis_declaracion.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Sintaxis general para declarar variables</span>
+<span class="type">id_tipo</span> <span class="variable">lista_ids_variables</span>;</div>
+            </div>
+
+            <h3>Ejemplos</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplos_declaracion.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Declaración de una variable entera</span>
+<span class="keyword">int</span> <span class="variable">cantidad</span>;
+
+<span class="comment">// Declaración de dos variables reales en una sola línea</span>
+<span class="keyword">float</span> <span class="variable">resultado</span>, <span class="variable">x</span>;
+
+<span class="comment">// Declaración de tres variables de tipo carácter</span>
+<span class="keyword">char</span> <span class="variable">letra_1</span>, <span class="variable">letra_2</span>, <span class="variable">letra_3</span>;</div>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">En el caso de que se quiera declarar más de una variable del mismo tipo, es posible <strong>declararlas todas de una vez, separando sus nombres con comas</strong>.</p>
+                <p class="full-text">Se acostumbra (y de hecho, es considerado una <strong class="highlight">buena práctica de programación</strong>) declarar todas las variables al comienzo del programa (más adelante veremos cómo).</p>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 9: CONSTANTES SIMBÓLICAS ==================== -->
+        <section class="section" id="constantes">
+            <div class="section-header">
+                <div class="section-number">9</div>
+                <h2>Constantes Simbólicas</h2>
+                <p style="color: var(--text-muted);">Valores con nombre que no cambian durante la ejecución</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">C permite la definición de constantes simbólicas, al permitir asociar un <strong class="highlight">nombre simbólico a un valor</strong> de un tipo dado.</p>
+                <p class="full-text">El propósito de utilizar constantes simbólicas en lugar de constantes de tipo es que para modificar el valor de una constante simbólica, <strong>únicamente se modifica en su definición</strong>, en lugar de modificar cada ocurrencia en el código del programa.</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Por ejemplo, si queremos utilizar el valor del <strong>IVA</strong> en muchas expresiones dentro del programa, en lugar de escribir dicho valor en cada una, lo que hacemos es definirlo como <strong class="text-primary">constante simbólica</strong>. Luego, en cada expresión que haga uso del IVA, en lugar de colocar directamente el valor, lo que haremos es hacer uso de la constante simbólica.</p>
+            </div>
+
+            <h3>Sintaxis</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>sintaxis_constante.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Sintaxis para declarar una constante simbólica</span>
+<span class="keyword">const</span> <span class="type">id_tipo</span> <span class="variable">ID_CONSTANTE</span> = <span class="number">valor</span>;</div>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">La definición de una constante simbólica es igual a la de una variable agregando el calificador <code>const</code> delante, y dándole un valor a la vez. Este valor <strong>no podrá ser cambiado</strong> durante la ejecución.</p>
+                <p class="full-text">Se acostumbra, aunque <strong>no es obligatorio</strong> desde el punto de vista de la sintaxis del lenguaje, que los nombres de las constantes simbólicas se escriban siempre en <strong class="highlight">MAYÚSCULAS</strong>.</p>
+                <p class="full-text">También es una <strong>buena práctica de programación</strong> que las constantes simbólicas sean <strong>lo primero que se declare</strong> dentro del programa.</p>
+            </div>
+
+            <h3>Ejemplos</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplos_constantes.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Constante simbólica de tipo char</span>
+<span class="keyword">const</span> <span class="keyword">char</span> <span class="variable">PRIMER_CAR</span> = <span class="string">'a'</span>;
+
+<span class="comment">// Constante simbólica de tipo int (valor del IVA)</span>
+<span class="keyword">const</span> <span class="keyword">int</span> <span class="variable">IVA</span> = <span class="number">23</span>;</div>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-card">
+                    <h4>❌ Sin constante simbólica</h4>
+                    <p class="full-text">Si el IVA cambia de 23 a 21, hay que buscar y modificar <strong>cada aparición del valor 23</strong> en todo el código del programa.</p>
+                </div>
+                <div class="comparison-card">
+                    <h4>✅ Con constante simbólica</h4>
+                    <p class="full-text">Solo se modifica <strong>una vez en la definición</strong> de la constante. Todos los usos de la constante se actualizan automáticamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 10: PROGRAMA ==================== -->
+        <section class="section" id="programa">
+            <div class="section-header">
+                <div class="section-number">10</div>
+                <h2>Programa</h2>
+                <p style="color: var(--text-muted);">Algoritmo escrito en un lenguaje de programación de alto nivel</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Un programa es un <strong class="highlight">algoritmo escrito en un lenguaje de programación de alto nivel</strong>.</p>
+                <p class="full-text">Los datos de entrada serán ingresados por el usuario a través del <strong>teclado</strong>. La salida será emitida al usuario a través de <strong>mensajes por pantalla</strong> y el método del algoritmo estará dado por las <strong>instrucciones (simples y/o compuestas)</strong> que contenga el programa.</p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Mirando al futuro:</strong> En futuros cursos de programación se verá también cómo hacer que un programa contenga más de un algoritmo en lugar de solamente uno. Dichos algoritmos se llamarán <strong>funciones y procedimientos</strong> y serán estudiados oportunamente. También se verán otros mecanismos para leer datos de la entrada y para emitir al usuario la salida. Para este curso, nos bastará con leer desde teclado y mostrar valores y texto en la salida estándar (consola).</p>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 11: ESTRUCTURA BÁSICA ==================== -->
+        <section class="section" id="estructura-programa">
+            <div class="section-header">
+                <div class="section-number">11</div>
+                <h2>Estructura Básica de un Programa en C</h2>
+                <p style="color: var(--text-muted);">La anatomía que todo programa debe respetar</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Se presenta a continuación la estructura que tendrán nuestros primeros programas en lenguaje C. <strong class="highlight">Todo programa que escribamos debe respetar la siguiente estructura sintáctica:</strong></p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>estructura_programa.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// ============================================</span>
+<span class="comment">// Estructura básica de un programa en C</span>
+<span class="comment">// ============================================</span>
+
+<span class="comment">// 1. Inclusión de librerías predefinidas</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="comment">// 2. Declaración de constantes simbólicas</span>
+<span class="keyword">const</span> <span class="keyword">int</span> <span class="variable">IVA</span> = <span class="number">23</span>;
+
+<span class="comment">// 3. Programa principal</span>
+<span class="keyword">int</span> <span class="function">main</span>()
+{
+    <span class="comment">// 3a. Declaración de variables</span>
+    <span class="keyword">int</span> <span class="variable">cantidad</span>;
+    <span class="keyword">float</span> <span class="variable">precio</span>, <span class="variable">total</span>;
+
+    <span class="comment">// 3b. Instrucciones (tanto simples como compuestas)</span>
+    <span class="comment">// ... aquí va el código del programa ...</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Conforme vayamos avanzando en el curso, iremos incorporando nuevos elementos sintácticos a la estructura básica de un programa. Por ahora, nos bastará con la estructura recién definida.</p>
+            </div>
+
+            <h3>Detalle de cada sección</h3>
+
+            <div class="accordion">
+                <div class="accordion-item active">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h4>📦 1. Inclusión de Librerías Predefinidas</h4>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-content">
+                            <p class="full-text">Lo primero que debe haber en el programa es la inclusión de librerías predefinidas. Veremos que existen <strong>muchas librerías predefinidas</strong>, que permiten hacer uso de diferentes elementos ya predefinidos del lenguaje.</p>
+                            <p class="full-text">La primera librería que usaremos se llama <code>&lt;stdio.h&gt;</code> y es la que nos permitirá hacer uso de las instrucciones necesarias para poder <strong>leer valores por teclado</strong> y emitir al usuario tanto <strong>texto como valores por pantalla</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h4>🔒 2. Declaración de Constantes Simbólicas</h4>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-content">
+                            <p class="full-text">A continuación de la inclusión de la(s) librería(s) predefinidas que sean necesarias, debe ir la declaración de las <strong>constantes simbólicas</strong> que se vayan a utilizar en el programa.</p>
+                            <p class="full-text">Cada una de ellas se debe declarar conforme a la sintaxis vista anteriormente para las constantes simbólicas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <h4>🎯 3. Programa Principal (main)</h4>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-content">
+                            <p class="full-text">Luego de las constantes simbólicas, viene otra sección que denominaremos <strong class="highlight">programa principal</strong> (también llamado <strong>bloque principal</strong>) de nuestro programa.</p>
+                            <p class="full-text">Dentro de dicha sección se coloca la <strong>declaración de las variables</strong>, así como las <strong>instrucciones (tanto simples como compuestas)</strong> que el programa vaya a utilizar.</p>
+                            <p class="full-text">El programa o bloque principal tiene el siguiente encabezado: <code>int main()</code> y debe escribirse <strong>exactamente así</strong>. En futuros cursos de programación se verá por qué es que se escribe de esa manera. Por ahora, nos alcanza con saber que dicha línea, así escrita, marca el <strong>comienzo del bloque principal del programa</strong>.</p>
+                            <p class="full-text">Luego de la línea conteniendo el encabezado del bloque principal (<code>main</code>), se colocan <strong>llaves</strong>. Dentro de dichas llaves es que deben ir todas las declaraciones de las variables que el programa utilice, así como todas las instrucciones (tanto simples como compuestas) que el programa vaya a utilizar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 12: BUENAS PRÁCTICAS ==================== -->
+        <section class="section" id="buenas-practicas">
+            <div class="section-header">
+                <div class="section-number">12</div>
+                <h2>Buenas Prácticas de Programación</h2>
+                <p style="color: var(--text-muted);">Escribir código claro, legible, ordenado y prolijo</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text"><strong class="highlight">Observación:</strong> Si bien la sintaxis de C permite alternar la declaración de las variables junto con las instrucciones dentro del bloque <code>main</code>, se considera una <strong class="text-primary">buena práctica de programación</strong> que primero se declaren juntas todas las variables que el programa vaya a utilizar y que recién luego de ellas es que se coloquen las instrucciones a ejecutar.</p>
+                <p class="full-text">El compilador admitirá alternar ambos elementos sin problema. Es decir, desde el punto de vista sintáctico, ello es posible. No obstante, conforme a las buenas prácticas de programación, <strong>nosotros siempre declararemos primero las variables a utilizar y colocaremos luego las instrucciones a ejecutar</strong>.</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">A medida que avancemos en el curso, veremos que no solamente es importante que nuestros programas sean <strong>sintácticamente correctos</strong> y que <strong>compilen correctamente</strong>.</p>
+                <p class="full-text">También importa que se sigan <strong class="highlight">buenas prácticas de programación</strong> a la hora de escribir nuestros programas. Esto ayuda a que los programas sean:</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">👁️</div>
+                    <h4>Más Claros</h4>
+                    <p>Fáciles de entender a primera vista</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">📖</div>
+                    <h4>Más Legibles</h4>
+                    <p>Simples de leer y comprender</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">📋</div>
+                    <h4>Más Ordenados</h4>
+                    <p>Organizados de forma lógica</p>
+                </div>
+            </div>
+
+            <div class="info-box" style="text-align: center;">
+                <p><strong>💡 Recordá: Un buen código no es solo el que compila, sino el que cualquier programador puede leer y entender fácilmente.</strong></p>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 13: ENTRADA Y SALIDA ESTÁNDAR ==================== -->
+        <section class="section" id="entrada-salida">
+            <div class="section-header">
+                <div class="section-number">13</div>
+                <h2>Entrada y Salida Estándar</h2>
+                <p style="color: var(--text-muted);">Comunicación entre el usuario y el programa</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Como se dijo anteriormente, los datos de entrada del programa serán ingresados por el usuario a través de <strong>teclado</strong> y los datos de salida del programa (tanto texto como valores) serán mostrados a través de la <strong>consola</strong>.</p>
+                <p class="full-text">Se suele llamar <strong class="text-primary">Entrada Estándar</strong> a los datos que se leen por teclado y <strong class="text-primary">Salida Estándar</strong> a los valores y mensajes mostrados a través de la consola.</p>
+            </div>
+
+            <h3>Entrada/Salida en C</h3>
+            <div class="content-block">
+                <p class="full-text">En el lenguaje C, la forma de leer o escribir en los dispositivos de entrada o salida estándar está dada por un par de operaciones: <code>scanf</code> y <code>printf</code>.</p>
+                <p class="full-text">Estas operaciones se proveen en una librería predefinida denominada <code>&lt;stdio.h&gt;</code>, por tal razón, para el uso de las mismas es necesario incluir al comienzo del programa una línea especial que tiene dicho cometido:</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>stdio_include.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Inclusión obligatoria para usar scanf y printf</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span></div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 14: SCANF ==================== -->
+        <section class="section" id="scanf-detail">
+            <div class="section-header">
+                <div class="section-number">14</div>
+                <h2>scanf — Lectura de Datos</h2>
+                <p style="color: var(--text-muted);">Ingreso de datos desde la entrada estándar hacia el programa</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Esta operación permite el <strong class="highlight">ingreso de datos</strong> desde la entrada estándar hacia el programa.</p>
+            </div>
+
+            <h3>Sintaxis</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>sintaxis_scanf.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Sintaxis de scanf para leer datos desde el teclado</span>
+<span class="function">scanf</span>(<span class="string">"cadena_de_formato"</span>, &<span class="variable">param1</span>, &<span class="variable">param2</span>, ... , &<span class="variable">paramN</span>);</div>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">El primer parámetro (en este caso <strong>cadena</strong>) es una <strong>cadena de caracteres entre comillas dobles</strong> (<code>"</code>) que indica el <strong>tipo</strong> de los valores que serán leídos y colocados en las variables que siguen a continuación (parámetros) que son identificadores de variables previamente definidas.</p>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Importante:</strong> Una instrucción que invoca al procedimiento <code>scanf</code> tiene por efecto <strong class="highlight">detener la ejecución del programa</strong> hasta que se ingresen tantos valores como parámetros se hayan especificado, los que se almacenarán en la entrada estándar en el orden que llegaron. Estos valores se tomarán de allí, de a uno por vez, empezando por el primero, y se asignarán a las variables de acuerdo al orden en que estas aparecen en la lista.</p>
+            </div>
+
+            <h3>Algunas Invocaciones a scanf</h3>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_scanf_entero.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 1: Leer un valor entero</span>
+<span class="function">scanf</span>(<span class="string">"%d"</span>, &<span class="variable">cantidad</span>);
+
+<span class="comment">// La cadena "%d" indica que se lee un entero (int)</span>
+<span class="comment">// El valor ingresado se almacena en la variable 'cantidad'</span></div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_scanf_caracter.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 2: Leer un carácter</span>
+<span class="function">scanf</span>(<span class="string">"%c"</span>, &<span class="variable">letra</span>);
+
+<span class="comment">// La cadena "%c" indica que se lee un carácter (char)</span>
+<span class="comment">// El valor ingresado se almacena en la variable 'letra'</span></div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_scanf_dos_reales.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 3: Leer dos valores reales (float)</span>
+<span class="function">scanf</span>(<span class="string">"%f %f"</span>, &<span class="variable">precio_nafta</span>, &<span class="variable">cant_litros</span>);
+
+<span class="comment">// La cadena "%f %f" indica que se leen dos números reales</span>
+<span class="comment">// El primer valor se almacena en 'precio_nafta'</span>
+<span class="comment">// El segundo valor se almacena en 'cant_litros'</span></div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>El símbolo <code>&</code>:</strong> El símbolo <code>&</code> colocado delante de los identificadores de las variables, es necesario por razones que se verán en futuros cursos de programación. Por ahora, nos basta con saber que es <strong>parte de la sintaxis necesaria</strong> para que la instrucción <code>scanf</code> funcione correctamente.</p>
+            </div>
+
+            <h3>Especificadores de Formato</h3>
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Especificador</th>
+                        <th>Tipo de Dato</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td><code>%d</code></td>
+                        <td>int</td>
+                        <td>Número entero</td>
+                    </tr>
+                    <tr>
+                        <td><code>%f</code></td>
+                        <td>float</td>
+                        <td>Número real (punto flotante)</td>
+                    </tr>
+                    <tr>
+                        <td><code>%c</code></td>
+                        <td>char</td>
+                        <td>Carácter individual</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 15: PRINTF ==================== -->
+        <section class="section" id="printf-detail">
+            <div class="section-header">
+                <div class="section-number">15</div>
+                <h2>printf — Escritura de Datos</h2>
+                <p style="color: var(--text-muted);">Escribir datos en la salida estándar</p>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">Con la operación <code>printf</code> se escriben datos en la <strong class="highlight">salida estándar</strong>. El origen de éstos valores puede ser diverso: <strong>variables, constantes simbólicas, constantes de tipo o expresiones</strong>.</p>
+            </div>
+
+            <h3>Sintaxis</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>sintaxis_printf.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Sintaxis de printf para escribir datos en la salida estándar</span>
+<span class="function">printf</span>(<span class="string">"cadena_de_formato"</span>, <span class="variable">param1</span>, <span class="variable">param2</span>, ... , <span class="variable">paramN</span>);</div>
+            </div>
+
+            <div class="content-block">
+                <p class="full-text">El primer parámetro (en este caso <strong>cadena</strong>) es una cadena de caracteres como en <code>scanf</code> que indica el <strong>tipo</strong> de los parámetros que se quieren escribir y que corresponden a los identificadores de variables, constantes o expresiones que siguen en la lista.</p>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Diferencia con scanf:</strong> A diferencia de <code>scanf</code>, en <code>printf</code> también es posible escribir un <strong>texto que se desee que salga en pantalla</strong>, intercalándolo con los símbolos para indicar el tipo de los valores a mostrar.</p>
+                <p style="margin-top: 0.5rem;">El efecto de una instrucción que invoca a <code>printf</code> es escribir en la salida estándar los valores de los parámetros, en el orden en que se especificaron.</p>
+            </div>
+
+            <h3>Ejemplos</h3>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_printf_real.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 1: Mostrar un valor real (float)</span>
+<span class="function">printf</span>(<span class="string">"%f"</span>, <span class="variable">precio</span>);
+
+<span class="comment">// Muestra por pantalla el valor almacenado en 'precio'</span></div>
+            </div>
+            <div class="content-block">
+                <p class="full-text">Se indica que se va a mostrar un <strong>valor de tipo real</strong>, y a continuación se coloca la variable <code>precio</code> (de tipo <code>float</code>). El efecto en la ejecución es que se muestra por pantalla el <strong>valor almacenado dentro de la variable precio</strong>.</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_printf_caracter.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 2: Mostrar un carácter (char)</span>
+<span class="function">printf</span>(<span class="string">"%c"</span>, <span class="variable">letra</span>);
+
+<span class="comment">// Muestra por pantalla el valor almacenado en 'letra'</span></div>
+            </div>
+            <div class="content-block">
+                <p class="full-text">Se indica que se va a mostrar un <strong>valor de tipo carácter</strong>, y a continuación se coloca la variable <code>letra</code> (de tipo <code>char</code>). El efecto en la ejecución es que se muestra por pantalla el <strong>valor almacenado dentro de la variable letra</strong>.</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_printf_texto_intercalado.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 3: Intercalar texto con valores</span>
+<span class="function">printf</span>(<span class="string">"Hay %d litros"</span>, <span class="variable">cant_litros</span>);
+
+<span class="comment">// Si cant_litros = 10, la salida será: "Hay 10 litros"</span></div>
+            </div>
+            <div class="content-block">
+                <p class="full-text">Se <strong>intercala texto con un valor de tipo entero</strong>, y a continuación se coloca la variable <code>cant_litros</code> (de tipo <code>float</code>).</p>
+                <p class="full-text">El efecto en la ejecución es que se muestra por pantalla un mensaje formado por la palabra <strong>Hay</strong>, seguido del <strong>valor almacenado en la variable cant_litros</strong> y seguido luego de la palabra <strong>litros</strong>.</p>
+                <p class="full-text">Por ejemplo, si la variable <code>cant_litros</code> contiene el valor <strong>10</strong>, el mensaje que verá el usuario es:</p>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; margin-top: 0.5rem; font-family: 'Fira Code', monospace; color: var(--success); font-size: 1.1rem;">Hay 10 litros</div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="code-dot red"></div>
+                    <div class="code-dot yellow"></div>
+                    <div class="code-dot green"></div>
+                    <span>ejemplo_printf_texto_solon.c</span>
+                </div>
+                <div class="code-content"><span class="comment">// Ejemplo 4: Solo texto con salto de línea (\n)</span>
+<span class="function">printf</span>(<span class="string">"Esto es solamente un mensaje\n"</span>);
+
+<span class="comment">// \n = salto de línea: el próximo printf aparecerá en la línea siguiente</span></div>
+            </div>
+            <div class="content-block">
+                <p class="full-text">Solamente se muestra <strong>texto al usuario</strong>, sin incorporar el valor de ninguna variable. Para ello, simplemente se coloca el texto a mostrar entre comillas dobles, como único parámetro de <code>printf</code>.</p>
+                <p class="full-text">Esto genera que se muestre al usuario el texto contenido entre las comillas. El carácter especial <code>\n</code> al final significa <strong>salto de línea</strong>.</p>
+                <p class="full-text">Esto quiere decir que, tras mostrar el mensaje, el programa dará un salto de línea en la pantalla. Por lo tanto, <strong>cualquier otro mensaje que se muestre posteriormente, aparecerá en la línea siguiente</strong>.</p>
+                <p class="full-text">En caso de que no se coloque el carácter de salto de línea, lo próximo que se despliegue aparecerá en la <strong>misma línea</strong>, justo a continuación de la palabra mensaje.</p>
+            </div>
+
+            <div class="warning-box">
+                <p><strong>Recuerda:</strong> <code>\n</code> = salto de línea. Sin él, todo aparece en la misma línea. Con él, cada mensaje aparece en una línea nueva.</p>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION 16: QUIZ ==================== -->
+        <section class="section" id="quiz">
+            <div class="section-header">
+                <div class="section-number">🎯</div>
+                <h2>Pon a prueba tus conocimientos</h2>
+                <p style="color: var(--text-muted);">Responde estas preguntas para verificar tu aprendizaje</p>
+            </div>
+
+            <!-- Quiz 1 -->
+            <div class="quiz-container" id="quiz1">
+                <div class="quiz-question">1. ¿Cómo se denomina el proceso de traducción de un lenguaje de alto nivel a lenguaje de máquina?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz1', this, false)">A) Interpretación</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz1', this, true)">B) Compilación</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz1', this, false)">C) Ejecución</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz1', this, false)">D) Depuración</div>
+                </div>
+                <div class="quiz-feedback" id="quiz1-feedback"></div>
+            </div>
+
+            <!-- Quiz 2 -->
+            <div class="quiz-container" id="quiz2">
+                <div class="quiz-question">2. ¿Qué carácter se utiliza para indicar el fin de una instrucción simple en C?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz2', this, false)">A) . (punto)</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz2', this, true)">B) ; (punto y coma)</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz2', this, false)">C) : (dos puntos)</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz2', this, false)">D) , (coma)</div>
+                </div>
+                <div class="quiz-feedback" id="quiz2-feedback"></div>
+            </div>
+
+            <!-- Quiz 3 -->
+            <div class="quiz-container" id="quiz3">
+                <div class="quiz-question">3. ¿Cuál de los siguientes es un identificador válido en C?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz3', this, false)">A) 1variable</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz3', this, false)">B) if</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz3', this, true)">C) mi_variable</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz3', this, false)">D) mi-var</div>
+                </div>
+                <div class="quiz-feedback" id="quiz3-feedback"></div>
+            </div>
+
+            <!-- Quiz 4 -->
+            <div class="quiz-container" id="quiz4">
+                <div class="quiz-question">4. ¿Cuál es la cuádrupla que define una variable?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz4', this, false)">A) (Nombre, Valor, Tipo, Función)</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz4', this, true)">B) (Nombre, Valor, Tipo, Dirección)</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz4', this, false)">C) (Nombre, Variable, Tipo, Dirección)</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz4', this, false)">D) (Nombre, Valor, Tamaño, Dirección)</div>
+                </div>
+                <div class="quiz-feedback" id="quiz4-feedback"></div>
+            </div>
+
+            <!-- Quiz 5 -->
+            <div class="quiz-container" id="quiz5">
+                <div class="quiz-question">5. ¿Qué especificador de formato se usa en scanf para leer un número entero?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz5', this, false)">A) %f</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz5', this, false)">B) %c</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz5', this, true)">C) %d</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz5', this, false)">D) %s</div>
+                </div>
+                <div class="quiz-feedback" id="quiz5-feedback"></div>
+            </div>
+
+            <!-- Quiz 6 -->
+            <div class="quiz-container" id="quiz6">
+                <div class="quiz-question">6. ¿Qué librería se necesita incluir para usar scanf y printf?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz6', this, false)">A) &lt;stdlib.h&gt;</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz6', this, false)">B) &lt;math.h&gt;</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz6', this, true)">C) &lt;stdio.h&gt;</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz6', this, false)">D) &lt;string.h&gt;</div>
+                </div>
+                <div class="quiz-feedback" id="quiz6-feedback"></div>
+            </div>
+
+            <!-- Quiz 7 -->
+            <div class="quiz-container" id="quiz7">
+                <div class="quiz-question">7. ¿Qué efecto tiene una instrucción scanf sobre la ejecución del programa?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz7', this, false)">A) Acelera la ejecución</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz7', this, true)">B) Detiene la ejecución hasta que se ingresen valores</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz7', this, false)">C) Compila el código</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz7', this, false)">D) No tiene ningún efecto</div>
+                </div>
+                <div class="quiz-feedback" id="quiz7-feedback"></div>
+            </div>
+
+            <!-- Quiz 8 -->
+            <div class="quiz-container" id="quiz8">
+                <div class="quiz-question">8. ¿Qué significa el carácter especial \n en printf?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz8', this, false)">A) Tabulación</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz8', this, true)">B) Salto de línea</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz8', this, false)">C) Retorno de carro</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz8', this, false)">D) Espacio en blanco</div>
+                </div>
+                <div class="quiz-feedback" id="quiz8-feedback"></div>
+            </div>
+
+            <!-- Quiz 9 -->
+            <div class="quiz-container" id="quiz9">
+                <div class="quiz-question">9. ¿Cómo se denomina a una secuencia de instrucciones encerrada entre llaves { } en C?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz9', this, false)">A) Función</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz9', this, false)">B) Variable compuesta</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz9', this, true)">C) Bloque o instrucción compuesta</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz9', this, false)">D) Estructura de datos</div>
+                </div>
+                <div class="quiz-feedback" id="quiz9-feedback"></div>
+            </div>
+
+            <!-- Quiz 10 -->
+            <div class="quiz-container" id="quiz10">
+                <div class="quiz-question">10. ¿Cuál es la convención de escritura para los nombres de constantes simbólicas?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer('quiz10', this, false)">A) Todo en minúsculas</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz10', this, true)">B) Todo en MAYÚSCULAS</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz10', this, false)">C) CamelCase</div>
+                    <div class="quiz-option" onclick="checkAnswer('quiz10', this, false)">D) Sin convención específica</div>
+                </div>
+                <div class="quiz-feedback" id="quiz10-feedback"></div>
+            </div>
+
+            <div class="card" style="text-align: center; margin-top: 2rem;">
+                <h3 style="justify-content: center;">Tu puntuación: <span id="scoreDisplay" class="highlight">0</span> / 10</h3>
+                <button class="run-btn" style="margin-top: 1rem; padding: 0.75rem 2rem; font-size: 1rem;" onclick="resetQuiz()">🔄 Reintentar</button>
+            </div>
+        </section>
+
+        <!-- ==================== SUMMARY ==================== -->
+        <section class="section" id="summary">
+            <div class="section-header">
+                <h2>📋 Resumen del Capítulo</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">📝</div>
+                    <h4>Lenguajes</h4>
+                    <p>Del lenguaje informal al de alto nivel. El compilador traduce a lenguaje de máquina</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">🔧</div>
+                    <h4>Instrucciones</h4>
+                    <p>Terminan en ; y pueden agruparse en bloques con { }</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">🔄</div>
+                    <h4>Estructuras de Control</h4>
+                    <p>if/else, while, do/while, for, switch</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">🏷️</div>
+                    <h4>Identificadores</h4>
+                    <p>Reglas: letra inicial, sin palabras reservadas, case-sensitive</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">📊</div>
+                    <h4>Variables</h4>
+                    <p>Cuádrupla (N, V, T, D) — Se deben declarar antes de usar</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">🔒</div>
+                    <h4>Constantes Simbólicas</h4>
+                    <p>const tipo NOMBRE = valor; — En MAYÚSCULAS</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">🏗️</div>
+                    <h4>Estructura del Programa</h4>
+                    <p>#include → const → int main() { variables → instrucciones }</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">✅</div>
+                    <h4>Buenas Prácticas</h4>
+                    <p>Código claro, legible, ordenado y prolijo</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">📥</div>
+                    <h4>scanf</h4>
+                    <p>Lee datos desde el teclado — Detiene la ejecución</p>
+                </div>
+                <div class="concept-card" style="text-align: center;">
+                    <div class="icon">📤</div>
+                    <h4>printf</h4>
+                    <p>Muestra datos en la consola — Permite texto intercalado</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>📚 Programación 1 - Lenguajes de Programación</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Web creada en base a los materiales del curso</p>
+    </div>
+
+    <script>
+        // Floating symbols
+        function createFloatingSymbols() {
+            const container = document.getElementById('floatingSymbols');
+            const symbols = ['{', '}', ';', '(', ')', '#', '&', '%', 'int', 'float', 'char', 'if', 'for', 'while', 'const', 'main', 'printf', 'scanf'];
+            for (let i = 0; i < 25; i++) {
+                const symbol = document.createElement('div');
+                symbol.className = 'floating-symbol';
+                symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                symbol.style.left = Math.random() * 100 + '%';
+                symbol.style.animationDuration = (15 + Math.random() * 20) + 's';
+                symbol.style.animationDelay = Math.random() * 15 + 's';
+                symbol.style.fontSize = (1 + Math.random() * 2) + 'rem';
+                container.appendChild(symbol);
+            }
+        }
+        createFloatingSymbols();
+
+        // Scroll progress
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = Math.round((scrollTop / docHeight) * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Section visibility
+        function checkSections() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.75) {
+                    section.classList.add('visible');
+                }
+            });
+
+            const dots = document.querySelectorAll('.nav-dot');
+            dots.forEach(dot => {
+                const target = document.getElementById(dot.dataset.target);
+                if (target) {
+                    const rect = target.getBoundingClientRect();
+                    if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                        dots.forEach(d => d.classList.remove('active'));
+                        dot.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => { updateProgress(); checkSections(); });
+        checkSections();
+
+        // Nav dot clicks
+        document.querySelectorAll('.nav-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const target = document.getElementById(dot.dataset.target);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Tabs
+        function showTab(event, tabId) {
+            const tabContainer = event.target.closest('.tabs');
+            tabContainer.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            tabContainer.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Accordion
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const wasActive = item.classList.contains('active');
+            item.parentElement.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+            if (!wasActive) item.classList.add('active');
+        }
+
+        // Quiz
+        let quizScore = 0;
+        let answeredQuizzes = new Set();
+
+        function checkAnswer(quizId, element, isCorrect) {
+            if (answeredQuizzes.has(quizId)) return;
+            answeredQuizzes.add(quizId);
+
+            const container = document.getElementById(quizId);
+            const options = container.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById(quizId + '-feedback');
+
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.className = 'quiz-feedback show correct';
+                feedback.innerHTML = '✓ ¡Correcto! ¡Excelente trabajo!';
+                quizScore++;
+            } else {
+                element.classList.add('incorrect');
+                feedback.className = 'quiz-feedback show incorrect';
+                feedback.innerHTML = '✗ Incorrecto. Revisa el material y vuelve a intentarlo.';
+                // Find and highlight correct
+                const onclickStr = element.getAttribute('onclick');
+                const match = onclickStr.match(/checkAnswer\('([^']+)',\s*this,\s*(true|false)\)/);
+                if (match) {
+                    const quizName = match[1];
+                    options.forEach(opt => {
+                        const optOnclick = opt.getAttribute('onclick');
+                        if (optOnclick && optOnclick.includes('true')) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                }
+            }
+
+            document.getElementById('scoreDisplay').textContent = quizScore;
+        }
+
+        function resetQuiz() {
+            quizScore = 0;
+            answeredQuizzes.clear();
+            document.getElementById('scoreDisplay').textContent = '0';
+            document.querySelectorAll('.quiz-container').forEach(container => {
+                container.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('correct', 'incorrect');
+                    opt.style.pointerEvents = 'auto';
+                });
+                const feedback = container.querySelector('.quiz-feedback');
+                if (feedback) { feedback.className = 'quiz-feedback'; feedback.innerHTML = ''; }
+            });
+        }
+
+        // Card animations
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.concept-card, .content-block, .card, .quiz-container').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
+            cardObserver.observe(card);
+        });
+    </script>
+</body>
+</html>
